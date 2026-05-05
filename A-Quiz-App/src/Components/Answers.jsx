@@ -1,43 +1,52 @@
 import { useRef } from "react";
 
-export default function Answers( {answers , selectedAnswer , answerState , onSelect } ){
-    const shuffledAnswer = useRef();
-    
-    if( !shuffledAnswer.current ){
-  shuffledAnswer.current = [...answers];
-  shuffledAnswer.current.sort(() => Math.random() - 0.5);
+export default function Answers({
+  answers,
+  selectedAnswer,
+  answerState,
+  onSelect,
+}) {
+  const shuffledAnswer = useRef();
+
+  if (
+    !shuffledAnswer.current ||
+    shuffledAnswer.current.length !== answers.length
+  ) {
+    shuffledAnswer.current = [...answers];
+    shuffledAnswer.current.sort(() => Math.random() - 0.5);
   }
 
   return (
-       <ul id="answers">
-          {shuffledAnswer.current.map((answers) => {
-            const isSelected =
-              selectedAnswer === answers;
+    <ul id="answers">
+      {shuffledAnswer.current.map((answer) => {
+        const isSelected = selectedAnswer === answer;
 
-            let cssClass = "";
+        let cssClass = "";
 
-            if (answerState === "answered" && isSelected) {
-              cssClass = "selected";
-            }
+        if (answerState === "answered" && isSelected) {
+          cssClass = "selected";
+        }
 
-            if (
-              (answerState === "correct" || answerState === "wrong") &&
-              isSelected
-            ) {
-              cssClass = answerState;
-            }
+        if (
+          (answerState === "correct" ||
+            answerState === "wrong") &&
+          isSelected
+        ) {
+          cssClass = answerState;
+        }
 
-            return (
-              <li key={answers} className="answer">
-                <button
-                  onClick={() => onSelect(answers)}
-                  className={cssClass}
-                >
-                  {answers}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        return (
+          <li key={answer} className="answer">
+            <button
+              onClick={() => onSelect(answer)}
+              className={cssClass}
+              disabled={answerState !== ""}
+            >
+              {answer}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
